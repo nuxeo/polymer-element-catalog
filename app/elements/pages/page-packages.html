@@ -26,15 +26,17 @@
           </template>
         </div>
 
-        <div id="guides-container">
-          <h3>Element Guides</h3>
-          <div id="guide-list" class="horizontal layout wrap">
-            <template is="dom-repeat" items="[[guides]]">
-              <a href$="[[_link('guides',item.name)]]" is="app-link"><guide-card guide="[[item.name]]"></guide-card></a>
-            </template>
-            <div id="coming-soon">More guides coming soon, stay tuned!</div>
+        <template is="dom-if" if="[[guides.length]]">
+          <div id="guides-container">
+            <h3>Element Guides</h3>
+            <div id="guide-list" class="horizontal layout wrap">
+              <template is="dom-repeat" items="[[guides]]">
+                <a href$="[[_link('guides',item.name)]]" is="app-link"><guide-card guide="[[item.name]]"></guide-card></a>
+              </template>
+              <div id="coming-soon">More guides coming soon, stay tuned!</div>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </paper-header-panel>
   </template>

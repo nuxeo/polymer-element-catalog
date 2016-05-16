@@ -3,16 +3,9 @@ var fs = require('fs-extra');
 var hydrolysis = require('hydrolysis');
 var Analyzer = hydrolysis.Analyzer;
 var FileLoader = hydrolysis.Loader;
-var FSResolver = hydrolysis.FSResolver;
 var Promise = require('es6-promise').Promise;
 
-module.exports = function(root, destDir, elementName, sources, callback) {
-  var elRoot = path.join(root, 'bower_components', elementName);
-  var elPath = path.join(elRoot, elementName + '.html');
-  var sourcePaths = sources.map(function(source) {
-    return (source.indexOf('/') >= 0) ? source : path.join(elRoot,source);
-  });
-  var loader = new FileLoader();
+module.exports = function(elementName, sourcePaths, callback) {
 
   Promise.all(sourcePaths.filter(function(path) {
     return fs.existsSync(path);
@@ -60,8 +53,6 @@ module.exports = function(root, destDir, elementName, sources, callback) {
         }
       });
     });
-
-    fs.writeFileSync(path.join(root, destDir, 'data', 'docs', elementName + '.json'), JSON.stringify(out));
 
     callback(null, out);
   }).catch(function(err) {

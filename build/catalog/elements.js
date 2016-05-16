@@ -6,24 +6,21 @@ var async = require('async');
 
 var stream = require('./utils/stream').obj;
 var packageDetails = require('./utils/package-details');
-var packageElements = require('./utils/package-elements');
 var analyze = require('./utils/analyze');
 var cleanTags = require('./utils/clean-tags');
 
 module.exports = function (imports) {
 
   var root = imports.root;
-  var destDir = imports.destDir;
+  var destDir = path.join(root, imports.destDir);
   var bowerFile = require(root + '/bower.json');
   var deps = bowerFile.dependencies;
 
   var data = [];
-  var out = {};
 
   return stream.compose(
     stream.parse('packages.*'),
     stream.filter(function(package) {
-
       return deps[package.name];
     }),
     stream.asyncMap(function (package, done) {
@@ -33,56 +30,79 @@ module.exports = function (imports) {
         name: package.name
       });
 
-      var elements = packageElements({
-        name: package.name,
-        deps: packageBower.dependencies
-      });
+      fs.mkdirsSync(path.join(destDir, 'data', 'docs'));
 
-      var output = async.map(elements, function (elementName, cb) {
+      var packageHtml = path.join(root, 'bower_components', package.name, package.name + '.html');
+      analyze(package.name, [packageHtml], function(err, packageData) {
 
-        var details = packageDetails({
-          root: root,
-          name: elementName
-        });
+        var elements = packageData.elements; //.concat(packageData.behaviors);
 
-        fs.mkdirsSync(path.join(root, destDir, 'data', 'docs'));
-        if (typeof details.main === 'string') details.main = [details.main];
-        analyze(root, destDir, elementName, details.main || [elementName + '.html'], function(err, data) {
-          // Set up object schema
-          console.log("-",elementName,"(" + details._release + ")");
+        var filtered = packageBower.elements || package.elements;
+        if (filtered) {
+          elements = elements.filter(function (el) {
+            return filtered.indexOf(el.is) !== -1;
+          })
+        }
 
-          var combined = data.elements.concat(data.behaviors);
-          var hero;
-          combined.forEach(function(el) {
-            if (el.hero) hero = '/bower_components/' + elementName + '/' + el.hero;
-          });
+        var output = async.map(elements, function (element, cb) {
 
-          var active = null;
-          var demo = null;
-          for (var i in combined) {
-            if (combined[i].demos.length) {
-              active = combined[i].is;
-              demo = (combined[i].demos || [])[0] || null;
+          var elementName = element.is;
+
+          console.log("-", elementName, "(" + packageBower._release + ")");
+
+          // write element info
+          var out = {elements: [element], elementsByTagName: {}, behaviors: [], features: []};
+
+          out.elementsByTagName[element.is] = element;
+
+          if (element.behaviors) {
+            out.behaviors = packageData.behaviors.filter(function(behavior) {
+              return element.behaviors.indexOf(behavior.is) !== -1;
+            });
+          }
+
+          fs.writeFileSync(path.join(destDir, 'data', 'docs', elementName + '.json'), JSON.stringify(out));
+
+          var elPath = path.relative(root + '/bower_components', element.contentHref);
+          var base = path.dirname(elPath);
+
+          var description, active, demo, hero;
+          if (element.desc) {
+            var lines = element.desc.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+              if (lines[i]) {
+                description = lines[i];
+                break;
+              }
             }
           }
 
+          if (element.demos) {
+            active = elementName;
+            demo = (element.demos || [])[0] || null;
+          }
+
+          if (element.hero) {
+            hero = path.join('bower_components', base, element.hero);
+          }
           cb(err, {
             name: elementName,
-            version: details._release,
-            source: details._originalSource,
-            target: details._target,
+            version: packageBower._release,
+            base: base,
+            source: packageBower._originalSource,
+            target: packageBower._target,
             package: package.name,
-            description: details.description,
-            tags: (details.keywords || []).filter(cleanTags),
+            description: description,
+            tags: (packageBower.keywords || []).filter(cleanTags),
             hero: hero,
             demo: demo,
             active: active,
-            elements: (data.elements || []).map(function(el){ return el.is; }),
-            behaviors: (data.behaviors || []).map(function(be){ return be.is; }),
+            behaviors: (element.behaviors || []).map(function(be){ return be.is; })
           });
+        }, function(err, output) {
+          done(err, output);
         });
-      }, function(err, output) {
-        done(err, output);
+
       });
     }),
 

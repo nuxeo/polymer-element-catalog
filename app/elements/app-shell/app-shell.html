@@ -33,7 +33,7 @@
   <template>
     <paper-drawer-panel id="cartpanel" class="flex" force-narrow right-drawer disable-edge-swipe disable-swipe drawer-width="320px">
       <div id="main"  main>
-        <app-router id="router" class="flex" mode="pushstate" on-activate-route-end="trackPageview">
+        <app-router id="router" class="flex" mode="pushstate">
           <app-route path="/" element="page-packages" bindRouter></app-route>
           <app-route path="/browse" element="page-browse" bindRouter onUrlChange="updateModel"></app-route>
           <app-route path="/elements/:element" element="page-element" bindRouter onUrlChange="updateModel"></app-route>
@@ -72,9 +72,9 @@
     },
     updateTitle: function(_, detail) {
       if (detail.title && detail.title.length) {
-        document.title = detail.title + " - Polymer Element Catalog";
+        document.title = detail.title + " - Nuxeo Elements Catalog";
       } else {
-        document.title = "Polymer Element Catalog";
+        document.title = "Nuxeo Elements Catalog";
       }
     },
     cartClose: function() {
@@ -96,17 +96,6 @@
       }
       this._toast.text = detail.text;
       this.async(this._toast.show.bind(this._toast), 1);
-    },
-
-    trackPageview: function(e, detail) {
-      this.debounce('pageview', function() {
-        var loc = window.location.pathname + window.location.search;
-        ga('send', 'pageview', {
-          location: loc,
-          title: document.title
-        });
-        ga('set', 'page', loc);
-      }, 2000);
     }
   });
 </script>

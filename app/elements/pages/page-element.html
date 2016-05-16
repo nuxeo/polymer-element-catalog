@@ -80,6 +80,7 @@
           </div>
         </app-sidebar>
         <section main class="fit">
+          here: <span>[[metatada.name]]</span>
           <iron-component-page
             catalog
             id="componentPage"
@@ -87,7 +88,7 @@
             package$="[[package.name]]"
             version="[[metadata.version]]"
             doc-src="[[docSrc(element)]]"
-            base="[[baseURI(element)]]"
+            base="[[elementUri]]"
             view="{{view}}"
             doc-elements="{{docElements}}"
             doc-behaviors="{{docBehaviors}}"
@@ -123,7 +124,11 @@
         type: String,
         reflectToAttribute: true
       },
-      narrowDrawer: Boolean
+      narrowDrawer: Boolean,
+      elementUri: {
+        type: String,
+        computed: '_baseURI(metadata.*)'
+      }
     },
     observers: [
       'updateMeta(element,active)',
@@ -181,8 +186,10 @@
     docSrc: function(element) {
       return "/data/docs/" + element + ".json";
     },
-    baseURI: function(element) {
-      return window.location.origin + "/bower_components/" + element + "/" + element + ".html";
+    _baseURI: function() {
+      if (this.metadata) {
+        return window.location.origin + "/bower_components/" + this.metadata.base + "/" + this.element + ".html";
+      }
     },
     search: function(q) {
       if (q || this.q) {
