@@ -62,10 +62,7 @@ module.exports = function (imports) {
           }
 
           fs.writeFileSync(path.join(destDir, 'data', 'docs', elementName + '.json'), JSON.stringify(out));
-
-          var elPath = path.relative(root + '/bower_components', element.contentHref);
-          var base = path.dirname(elPath);
-
+          
           var description, active, demo, hero;
           if (element.desc) {
             var lines = element.desc.split('\n');
@@ -83,12 +80,12 @@ module.exports = function (imports) {
           }
 
           if (element.hero) {
-            hero = path.join('bower_components', base, element.hero);
+            var base = path.dirname(path.relative(root, element.contentHref));
+            hero = path.join(base, element.hero);
           }
           cb(err, {
             name: elementName,
             version: packageBower._release,
-            base: base,
             source: packageBower._originalSource,
             target: packageBower._target,
             package: package.name,
