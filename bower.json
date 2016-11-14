@@ -24,8 +24,8 @@
     "pushstate-anchor": "~0.3.0",
     "color": "~2.5.0",
     "hydrolysis": "PolymerLabs/hydrolysis#^1.11.0",
-    "nuxeo-elements": "nuxeo/nuxeo-elements#^0.3.0",
-    "nuxeo-ui-elements": "nuxeo/nuxeo-ui-elements#^0.1.0",
-    "nuxeo-dataviz-elements": "nuxeo/nuxeo-dataviz-elements#^0.3.0"
+    "nuxeo-elements": "nuxeo/nuxeo-elements#master",
+    "nuxeo-ui-elements": "nuxeo/nuxeo-ui-elements#master",
+    "nuxeo-dataviz-elements": "nuxeo/nuxeo-dataviz-elements#master"
   }
 }

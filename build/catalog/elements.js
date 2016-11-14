@@ -89,6 +89,7 @@ module.exports = function (imports) {
             source: packageBower._originalSource,
             target: packageBower._target,
             package: package.name,
+            path: path.relative(root + '/bower_components/' + package.name, element.contentHref),
             description: description,
             tags: (packageBower.keywords || []).filter(cleanTags),
             hero: hero,
