@@ -1,13 +1,14 @@
 {
-  "firebase": "sizzling-inferno-6187",
-  "public": "dist",
-  "ignore": [
-    "firebase.json",
-    "**/.*",
-    "**/node_modules/**"
-  ],
-  "rewrites": [{
-    "source":"**",
-    "destination":"/index.html"
-  }]
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+      "source":"**",
+      "destination":"/index.html"
+    }]
+  }
 }
