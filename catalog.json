@@ -3,7 +3,7 @@
     {
       "name":"nuxeo-elements",
       "title":"Core Elements",
-      "version":"0.8.0",
+      "version":"master",
       "symbol":"NX",
       "color":"#00adff",
       "tagline":"Nuxeo core elements",
@@ -14,7 +14,7 @@
       "title":"UI Elements",
       "symbol":"UI",
       "color":"#ffb74d",
-      "version":"0.8.0",
+      "version":"master",
       "tagline":"UI elements",
       "description":"Nuxeo elements providing UI and common utility components for building custom applications."
     },
@@ -23,7 +23,7 @@
       "title":"Dataviz Elements",
       "symbol":"VZ",
       "color":"#81c784",
-      "version":"0.8.0",
+      "version":"master",
       "tagline":"Nuxeo data visualization elements",
       "description":"Nuxeo elements for building custom data visualization applications and dashboards"
     }

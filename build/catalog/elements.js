@@ -35,7 +35,7 @@ module.exports = function (imports) {
       var packageHtml = path.join(root, 'bower_components', package.name, package.name + '.html');
       analyze(package.name, [packageHtml], function(err, packageData) {
 
-        var elements = packageData.elements; //.concat(packageData.behaviors);
+        var elements = packageData.elements.concat(packageData.behaviors);
 
         var filtered = packageBower.elements || package.elements;
         if (filtered) {
@@ -62,7 +62,7 @@ module.exports = function (imports) {
           }
 
           fs.writeFileSync(path.join(destDir, 'data', 'docs', elementName + '.json'), JSON.stringify(out));
-          
+
           var description, active, demo, hero;
           if (element.desc) {
             var lines = element.desc.split('\n');
@@ -95,7 +95,7 @@ module.exports = function (imports) {
             hero: hero,
             demo: demo,
             active: active,
-            behaviors: (element.behaviors || []).map(function(be){ return be.is; })
+            behaviors: element.behaviors || []
           });
         }, function(err, output) {
           done(err, output);
